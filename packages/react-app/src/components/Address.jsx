@@ -78,7 +78,7 @@ export default function Address(props) {
   let text;
   if (props.onChange) {
     text = (
-      <Text editable={{ onChange: props.onChange }} copyable={{ text: address }}>
+      <Text editable={{ onChange: props.onChange }} >
         <a
           style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
           target="_blank"
@@ -91,9 +91,9 @@ export default function Address(props) {
     );
   } else {
     text = (
-      <Text copyable={{ text: address }}>
+      <Text>
         <a
-          style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
+          style={{ color: currentTheme === "light" ? "#222222" : "#ddd" , fontSize: "18px"}}
           target="_blank"
           href={etherscanLink}
           rel="noopener noreferrer"

@@ -14,10 +14,13 @@ import {
   Account,
   Address,
   AddressInput,
+  Claims,
   Contract,
   Faucet,
+  Homepage,
   GasGauge,
   Header,
+  Footer,
   Ramp,
   ThemeSwitch,
   Sell,
@@ -105,7 +108,7 @@ const getFromIPFS = async hashToGet => {
 };
 
 // 🛰 providers
-if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
+// if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 // const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
 // const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
 //
@@ -192,7 +195,7 @@ function App(props) {
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
+    // console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
 
   // Then read your DAI balance like:
@@ -202,10 +205,10 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
-  console.log("🤗 balance:", balance);
+  // console.log("🤗 balance:", balance);
   // 📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
-  console.log("📟 Transfer events:", transferEvents);
+  // console.log("📟 Transfer events:", transferEvents);
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
@@ -253,39 +256,39 @@ function App(props) {
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
-  useEffect(() => {
-    if (
-      DEBUG &&
-      mainnetProvider &&
-      address &&
-      selectedChainId &&
-      yourLocalBalance &&
-      yourMainnetBalance &&
-      readContracts &&
-      writeContracts &&
-      mainnetDAIContract
-    ) {
-      console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
-      console.log("🌎 mainnetProvider", mainnetProvider);
-      console.log("🏠 localChainId", localChainId);
-      console.log("👩‍💼 selected address:", address);
-      console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
-      console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetDAIContract);
-      console.log("🔐 writeContracts", writeContracts);
-    }
-  }, [
-    mainnetProvider,
-    address,
-    selectedChainId,
-    yourLocalBalance,
-    yourMainnetBalance,
-    readContracts,
-    writeContracts,
-    mainnetDAIContract,
-  ]);
+  // useEffect(() => {
+  //   if (
+  //     DEBUG &&
+  //     mainnetProvider &&
+  //     address &&
+  //     selectedChainId &&
+  //     yourLocalBalance &&
+  //     yourMainnetBalance &&
+  //     readContracts &&
+  //     writeContracts &&
+  //     mainnetDAIContract
+  //   ) {
+  //     console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
+  //     console.log("🌎 mainnetProvider", mainnetProvider);
+  //     console.log("🏠 localChainId", localChainId);
+  //     console.log("👩‍💼 selected address:", address);
+  //     console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
+  //     console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
+  //     console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
+  //     console.log("📝 readContracts", readContracts);
+  //     console.log("🌍 DAI contract on mainnet:", mainnetDAIContract);
+  //     console.log("🔐 writeContracts", writeContracts);
+  //   }
+  // }, [
+  //   mainnetProvider,
+  //   address,
+  //   selectedChainId,
+  //   yourLocalBalance,
+  //   yourMainnetBalance,
+  //   readContracts,
+  //   writeContracts,
+  //   mainnetDAIContract,
+  // ]);
 
   let networkDisplay = "";
   if (localChainId && selectedChainId && localChainId !== selectedChainId) {
@@ -394,13 +397,21 @@ function App(props) {
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [approveAddresses, setApproveAddresses] = useState({});
 
+  const appBody = {
+    paddingTop:"6%",
+    minHeight: "100vh",
+  }
   return (
-    <div className="App">
+    <div className="App" style={appBody}>
       {/* ✏️ Edit the header and change the title to your project name */}
-      <Header />
       {networkDisplay}
       <BrowserRouter>
-        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
+        <Header />
+          <Route path= "/homepage" exact>
+            <Homepage/>
+          </Route> 
+          <Route path= "/menu" exact>
+          <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
             <Link
               onClick={() => {
@@ -419,16 +430,6 @@ function App(props) {
               to="/mint"
             >
               Mint
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/lazyMint">
-            <Link
-              onClick={() => {
-                setRoute("/lazyMint");
-              }}
-              to="/lazyMint"
-            >
-              Lazy Mint
             </Link>
           </Menu.Item>
           <Menu.Item key="/raribleItemIndexer">
@@ -471,27 +472,10 @@ function App(props) {
               IPFS Upload
             </Link>
           </Menu.Item>
-          <Menu.Item key="/ipfsdown">
-            <Link
-              onClick={() => {
-                setRoute("/ipfsdown");
-              }}
-              to="/ipfsdown"
-            >
-              IPFS Download
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/debugcontracts">
-            <Link
-              onClick={() => {
-                setRoute("/debugcontracts");
-              }}
-              to="/debugcontracts"
-            >
-              Debug Contracts
-            </Link>
-          </Menu.Item>
+
         </Menu>
+          </Route>   
+      
 
         <Switch>
           <Route exact path="/">
@@ -599,6 +583,19 @@ function App(props) {
                           writeContracts={writeContracts}
                           accountAddress={address}
                         ></LazyMint>
+            </div>
+
+          </Route>
+          <Route path="/claims" exact>
+            <div style={{  marginTop: "10%", width: "1300px", margin: "auto" }}>
+                        <Claims
+                          ensProvider={mainnetProvider}
+                          provider={userProvider}
+                          // contractAddress={writeContracts.ERC721Rarible.address}
+                          // contractAddress={writeContracts.YourCollectible.address}
+                          writeContracts={writeContracts}
+                          accountAddress={address}
+                        ></Claims>
             </div>
 
           </Route>
@@ -774,62 +771,11 @@ function App(props) {
 
             <div style={{ padding: 16, paddingBottom: 150 }}>{ipfsHash}</div>
           </Route>
-          <Route path="/ipfsdown">
-            <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
-              <Input
-                value={ipfsDownHash}
-                placeholder="IPFS hash (like QmadqNw8zkdrrwdtPFK1pLi8PPxmkQ4pDJXY8ozHtz6tZq)"
-                onChange={e => {
-                  setIpfsDownHash(e.target.value);
-                }}
-              />
-            </div>
-            <Button
-              style={{ margin: 8 }}
-              loading={downloading}
-              size="large"
-              shape="round"
-              type="primary"
-              onClick={async () => {
-                console.log("DOWNLOADING...", ipfsDownHash);
-                setDownloading(true);
-                setIpfsContent();
-                const result = await getFromIPFS(ipfsDownHash); // addToIPFS(JSON.stringify(yourJSON))
-                if (result && result.toString) {
-                  setIpfsContent(result.toString());
-                }
-                setDownloading(false);
-              }}
-            >
-              Download from IPFS
-            </Button>
 
-            <pre style={{ padding: 16, width: 500, margin: "auto", paddingBottom: 150 }}>{ipfsContent}</pre>
-          </Route>
-          <Route path="/debugcontracts">
-            <Contract
-              name="YourCollectible"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            <Contract
-              name="YourERC20"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            <Contract
-              name="NFTHolder"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-          </Route>
+
         </Switch>
+        <Footer />
+
       </BrowserRouter>
 
       <ThemeSwitch />
@@ -850,45 +796,6 @@ function App(props) {
         {faucetHint}
       </div>
 
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
-
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
-
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={24}>
-            {
-              /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              ) : (
-                ""
-              )
-            }
-          </Col>
-        </Row>
-      </div>
     </div>
   );
 }

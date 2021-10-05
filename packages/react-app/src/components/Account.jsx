@@ -62,7 +62,7 @@ export default function Account({
           size="large"
           onClick={logoutOfWeb3Modal}
         >
-          logout
+          disconnect
         </Button>,
       );
     } else {
@@ -92,14 +92,7 @@ export default function Account({
       ) : (
         "Connecting..."
       )}
-      <Balance address={address} provider={localProvider} price={price} />
-      <Wallet
-        address={address}
-        provider={userProvider}
-        ensProvider={mainnetProvider}
-        price={price}
-        color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
-      />
+
     </span>
   );
 
