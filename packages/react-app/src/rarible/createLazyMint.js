@@ -47,6 +47,7 @@ async function createLazyMintForm(tokenId, contract, minter, ipfsHash, type, sup
 export async function createLazyMint(tokenId, provider, contract, minter, ipfsHash, type, supply) {
   const form = await createLazyMintForm(tokenId, contract, minter, ipfsHash, type, supply)
   const signature = await sign(provider, 3, contract, form, minter, type)
+  console.log("what is the signature " + signature)
 	return { ...form, signatures: [signature] }
 }
 

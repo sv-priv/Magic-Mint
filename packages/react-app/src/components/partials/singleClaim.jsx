@@ -17,6 +17,13 @@ export default function (data){
     const fileFormat = {
         float: "right"
     }
+    const addressFrom = {
+        maxWidth: "80%",
+        whiteSpace: "nowrap",
+        width: "80%",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+    }
 
     const claimButton = {
         padding: "1px 20px 10px 10px",
@@ -142,8 +149,16 @@ export default function (data){
 
                             </div>
                         <div >
-                            <div style={authorEarning}>From: {data.data.from} </div>
-                            <div style={authorEarning}>Token ID: {data.data.tokenID}</div>
+                            <div style={authorEarning}>From:
+                            <div style={addressFrom}>
+                                {data.data.from} 
+                             </div>
+                             </div>
+                            <div style={authorEarning}>Token: 
+                            <div style={addressFrom}>
+                                {data.data.tokenID} 
+                             </div>                            
+                            </div>
 
                         </div>
                         <div className="row " style={earningPrice}>

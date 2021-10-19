@@ -18,35 +18,35 @@ export default function Claims (){
             name: "Bastard",
             from: "0x559441FEf78b7E27b66db69C11e5B3827e1aea96",
             type: "jpg",
-            tokenID: "ID"
+            tokenID: "38708540982573358784393789551288979567863678565686620899063358016697640419370"
 
         },
         {
             name: "Punk",
             from: "0x559441FEf78b7E27b66db69C11e5B3827e1aea96",
             type: "jpg",
-            tokenID: "ID"
+            tokenID: "38708540982573358784393789551288979567863678565686620899063358016697640419370"
 
         },
         {
             name: "DystoPunk",
             from: "0x559441FEf78b7E27b66db69C11e5B3827e1aea96",
             type: "jpg",
-            tokenID: ""
+            tokenID: "38708540982573358784393789551288979567863678565686620899063358016697640419370"
 
         },
         {
             name: "Blockart",
             from: "0x559441FEf78b7E27b66db69C11e5B3827e1aea96",
             type: "jpg",
-            tokenID: ""
+            tokenID: "38708540982573358784393789551288979567863678565686620899063358016697640419370"
 
         },
         {
             name: "ArtBlock",
             from: "0x559441FEf78b7E27b66db69C11e5B3827e1aea96",
             type: "jpg",
-            tokenID: ""
+            tokenID: "38708540982573358784393789551288979567863678565686620899063358016697640419370"
 
         }
 

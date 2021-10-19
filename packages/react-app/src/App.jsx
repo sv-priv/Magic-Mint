@@ -96,13 +96,13 @@ const STARTING_JSON = {
 // you usually go content.toString() after this...
 const getFromIPFS = async hashToGet => {
   for await (const file of ipfs.get(hashToGet)) {
-    console.log(file.path);
+    // console.log(file.path);
     if (!file.content) continue;
     const content = new BufferList();
     for await (const chunk of file.content) {
       content.append(chunk);
     }
-    console.log(content);
+    // console.log(content);
     return content;
   }
 };
@@ -410,18 +410,11 @@ function App(props) {
           <Route path= "/homepage" exact>
             <Homepage/>
           </Route> 
+          <Route path= "/" exact>
+            <Homepage/>
+          </Route> 
           <Route path= "/menu" exact>
           <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              YourCollectibles
-            </Link>
-          </Menu.Item>
           <Menu.Item key="/mint">
             <Link
               onClick={() => {
@@ -526,7 +519,7 @@ function App(props) {
                         />
                         <Button
                           onClick={() => {
-                            console.log("writeContracts", writeContracts);
+                            // console.log("writeContracts", writeContracts);
                             tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
@@ -544,7 +537,7 @@ function App(props) {
                         />
                         <Button
                           onClick={() => {
-                            console.log("writeContracts", writeContracts);
+                            // console.log("writeContracts", writeContracts);
                             tx(writeContracts.YourCollectible.approve(approveAddresses[id], id));
                           }}
                         >
@@ -587,7 +580,7 @@ function App(props) {
 
           </Route>
           <Route path="/claims" exact>
-            <div style={{  marginTop: "10%", width: "1300px", margin: "auto" }}>
+            <div style={{  width: "1300px", margin: "auto" }}>
                         <Claims
                           ensProvider={mainnetProvider}
                           provider={userProvider}
@@ -595,7 +588,7 @@ function App(props) {
                           // contractAddress={writeContracts.YourCollectible.address}
                           writeContracts={writeContracts}
                           accountAddress={address}
-                        ></Claims>
+                ></Claims>
             </div>
 
           </Route>
@@ -691,11 +684,11 @@ function App(props) {
                       <Button
                         onClick={async () =>{
                           const preparedTransaction = await prepareMatchingOrder(item, address)
-                          console.log({preparedTransaction})
+                          // console.log({preparedTransaction})
                           const value = preparedTransaction.asset.value
                           const valueBN = BigNumber.from(value)
                           const safeValue = valueBN.add(100)
-                          console.log({safeValue})
+                          // console.log({safeValue})
                           const signer = userProvider.getSigner()
                           tx(signer.sendTransaction({to: preparedTransaction.transaction.to, from: address, data: preparedTransaction.transaction.data, value: safeValue}))
 
@@ -755,7 +748,7 @@ function App(props) {
               shape="round"
               type="primary"
               onClick={async () => {
-                console.log("UPLOADING...", yourJSON);
+                // console.log("UPLOADING...", yourJSON);
                 setSending(true);
                 setIpfsHash();
                 const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
@@ -763,7 +756,7 @@ function App(props) {
                   setIpfsHash(result.path);
                 }
                 setSending(false);
-                console.log("RESULT:", result);
+                // console.log("RESULT:", result);
               }}
             >
               Upload to IPFS

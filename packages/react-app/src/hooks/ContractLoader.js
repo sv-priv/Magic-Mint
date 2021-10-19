@@ -28,7 +28,7 @@ import { useEffect, useState } from "react";
 const loadContract = (contractName, signer) => {
   const newContract = new Contract(
     require(`../contracts/${contractName}.address.js`),
-    require(`../contracts/${contractName}.abi.js`),
+          require(`../contracts/${contractName}.abi.js`),
     signer,
   );
   try {
@@ -74,3 +74,4 @@ export default function useContractLoader(providerOrSigner) {
   }, [providerOrSigner]);
   return contracts;
 }
+  
