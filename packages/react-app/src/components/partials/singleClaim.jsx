@@ -112,7 +112,6 @@ export default function (data){
     }
     const cardBody = {
         borderRadius: "20px",
-        // width: "260px",
         background: "rgba(255, 255, 255, 1) ",
         borderBottomLeftRadius: "20px"
 
