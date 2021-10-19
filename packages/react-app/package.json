@@ -57,9 +57,7 @@
     "react-scripts": "^3.4.3",
     "web3modal": "^1.9.1",
     "eth-sig-util": "3.0.1",
-    "ethereumjs-util": "7.0.9",
-    "bootstrap": "^5.1.1"
-
+    "ethereumjs-util": "7.0.9"
   },
   "devDependencies": {
     "@testing-library/dom": "^6.12.2",
