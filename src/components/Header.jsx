@@ -41,7 +41,7 @@ export default function Header() {
     <div>
       <div  style={navigation} className="row landing navigation">
         <div className="col-md-4 col-lg-4">
-          <Link className="text-link" to="/homepage">
+          <Link className="text-link" to="/lazyMint">
               <span style={logo}>
                     Magic Mint
               </span>

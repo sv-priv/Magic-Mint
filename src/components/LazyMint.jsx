@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Card, Divider } from "antd";
-import {AddressInput} from './'
+import {AddressInput} from '.'
 import { BufferList } from "bl";
-    import { createLazyMint, generateTokenId, putLazyMint } from "../rarible/createLazyMint";
+import { createLazyMint, generateTokenId, putLazyMint } from "../rarible/createLazyMint";
 import { is } from "@babel/types";
 
 const ipfsAPI = require('ipfs-http-client');
@@ -203,14 +203,11 @@ export default function LazyMint(props) {
   const getFromIPFS = async hashToGet => {
     for await (const file of ipfs.get(hashToGet)) {
 
-      // console.log(file.path);
-
       if (!file.content) continue;
       const content = new BufferList();
       for await (const chunk of file.content) {
         content.append(chunk);
       }
-      // console.log(content);
       return content;
     }
   };
@@ -229,6 +226,8 @@ export default function LazyMint(props) {
   const [singleErc721Collection, setSingleErc721Collection] = React.useState();
   const [singleErc721TokenId, setSingleErc721TokenId] = React.useState();
   const [singleSending721, setSingleSending721] = React.useState();
+  const [singleClaimerAddress721, setSingleClaimerAddress721] = React.useState();
+
 
   // multiple ERC721
 
@@ -330,12 +329,8 @@ export default function LazyMint(props) {
           style={nftDroparea}
            onChange={ e => {
              e.preventDefault();
-
             const file = e.target.files[0]
-
             setSingleErc721File(e.target.files[0])
-
-
           }}
         />
         <Input
@@ -362,6 +357,15 @@ export default function LazyMint(props) {
           style={nftName}
           onChange={e => {
             setSingleErc721Royalties(e.target.value);
+          }}
+        />
+        <Input
+          value={singleClaimerAddress721}
+          placeholder="Set the Claimers address"
+          type="text"
+          style={nftName}
+          onChange={e => {
+            setSingleClaimerAddress721  (e.target.value);
           }}
         />
   <br/>

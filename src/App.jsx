@@ -407,11 +407,8 @@ function App(props) {
       {networkDisplay}
       <BrowserRouter>
         <Header />
-          <Route path= "/homepage" exact>
-            <Homepage/>
-          </Route> 
           <Route path= "/" exact>
-            <Homepage/>
+            <LazyMint/>
           </Route> 
           <Route path= "/menu" exact>
           <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">

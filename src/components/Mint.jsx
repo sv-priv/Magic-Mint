@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Input, Tooltip } from "antd";
-import {AddressInput} from './'
+import {AddressInput} from '.'
 
 export default function Mint(props) {
   const [mintTo, setMintTo] = React.useState();

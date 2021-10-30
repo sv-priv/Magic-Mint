@@ -4,6 +4,7 @@ import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import ReactDOM from "react-dom";
 import 'bootstrap/dist/css/bootstrap.css';
 import App from "./App";
+import './fonts.css';
 import "./index.css";
 
 const themes = {
