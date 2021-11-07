@@ -4,11 +4,18 @@ import {AddressInput} from '.'
 import { BufferList } from "bl";
 import { createLazyMint, generateTokenId, putLazyMint } from "../rarible/createLazyMint";
 import { is } from "@babel/types";
+import axios from "axios";
+import { createRaribleSdk } from "@rarible/protocol-ethereum-sdk"
+import { EthereumWallet } from "@rarible/sdk-wallet"
 
 const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
 
+
 export default function LazyMint(props) {
+
+  const sdk = createRaribleSdk(props.provider, "mainnet", { fetchApi: fetch })
+
 
   const titleMint = {
       fontFamily: "Whyte-Inktrap",
@@ -19,7 +26,6 @@ export default function LazyMint(props) {
       letterSpacing: "-0.02em",
       textTransform: "uppercase",
       color: "#313439",
-      marginBottom: "25px",
       textAlign: "center"
   }
 
@@ -30,11 +36,15 @@ export default function LazyMint(props) {
   }
 
   const createDesc = {
+
     fontSize: "20px",
     textTransform: "uppercase",
     fontWeight: "600",
-    marginBottom: "20px"
+    marginBottom: "60px"
 
+  }
+  const chooseLabel = {
+    margniTop: "50px"
   }
 
   const buttonMint = {
@@ -56,7 +66,7 @@ export default function LazyMint(props) {
   }
       
   const nftDroparea = {
-      width: "500px",
+      width: "200px",
       height: "50px",
       margin: "0 auto",
       textAlign: "center",
@@ -73,18 +83,21 @@ export default function LazyMint(props) {
       fontFamily: "Whyte",
       fontStyle: "normal",
       fontWeight: "normal",
-      fontSize: "20px",
+      fontSize: "15px",
       lineHeight: "25px",
       textAlign: "center",
       letterSpacing: "0.02em",
       textTransform: "uppercase",
       color: "#313439",
       flex: "none",
-      paddingTop: "10%"
+      paddingTop: "10%",
+      color: "rgb(178, 178, 193)"
   }
   const allowedFormats = {
       textAlign: "center",
-      marginTop: "10%"
+      marginTop: "10%",
+      marginBottom: "13%"
+
   }
   const format = {
       padding: "10px",
@@ -198,6 +211,27 @@ export default function LazyMint(props) {
     marginBottom:"50px"
   }
 
+  const nftDragDrop = {
+    width: "500px",
+    height: "300px",
+    margin: " 0 auto",
+    background: "#F0F1F9",
+    borderRadius: "110px",
+    marginBottom: "34px"
+  }
+
+  const label = {
+    display: "inline-block",
+    backgroundColor: "indigo",
+    color: "white",
+    padding: "0.5rem",
+    fontFamily: "sans-serif",
+    borderRadius: "0.3rem",
+    cursor: "pointer",
+    marginTop: "80px",
+  }
+  
+  // const sdk = createRaribleSdk(props.provider, "prod")
 
 
   const getFromIPFS = async hashToGet => {
@@ -229,6 +263,9 @@ export default function LazyMint(props) {
   const [singleClaimerAddress721, setSingleClaimerAddress721] = React.useState();
 
 
+
+
+
   // multiple ERC721
 
   const [multipleErc721IpfsHash, setMultipleErc721IpfsHash] = React.useState();
@@ -251,12 +288,6 @@ export default function LazyMint(props) {
   // const [erc1155ContractAddress, setErc1155ContractAddress] = React.useState();
 
 
-
-
-
-  // console.log({writeContracts: props.writeContracts})
-
-
   const [singleNFT, setIsSingle] = useState(true)
   const [formData, setFormData] = useState()
   const [isMint, setIsMint] = useState(false)
@@ -267,20 +298,22 @@ export default function LazyMint(props) {
         setIsMultiple(false)
       
   };
-
   const onChangeTypeMultiple = () => {
       setIsSingle(false)
       setIsMultiple(true)
   };
 
+
+  
   // on every render
-  useEffect(()=>{
-      console.log("on every render")
+  useEffect( ()=>{
+    
   })
 
   // on first render/mount
   useEffect(()=>{
-
+    // const creations = sdk.apis.item.getItemsByCreator({ creator: "0x559441FEf78b7E27b66db69C11e5B3827e1aea96" })
+    // console.log("apis",sdk.apis.nftItem.getNftItemsByCreator("0x559441FEf78b7E27b66db69C11e5B3827e1aea96" ))
     console.log("on first  render/ mount")
 
   },[])
@@ -288,51 +321,67 @@ export default function LazyMint(props) {
   // on first render +  whenever dependency formData is updated
   useEffect(()=>{
 
-      console.log("from use effect " + singleErc721File)
+      // console.log("from use effect " + singleErc721File)
 
-      console.log("minted use effect")
-      console.log("form",formData)
+      // console.log("minted use effect")
+      // console.log("form",formData)
 
   },[ formData])
 
-
-   
-  useEffect(()=>{
-
-    console.log("from use effect " + singleErc721File)
-
-    console.log("minted use effect")
-    console.log("form",formData)
-    
-},[ formData])
-
-
   return (
     <div>
-      <div style={buttonsChoose}>
-          <button  style={singleButtonChoose} onClick={onChangeTypeSingle}>
-               Single NFT
-          </button>
-          <button style={singleButtonChoose} onClick={onChangeTypeMultiple}>
-             Multiple NFTs
-          </button>
-        </div>
+
 
     { singleNFT ? 
     <div>
       <div style={createDesc}>
-        Create a single NFT
+        Create NFT
       </div>
-        <Input
+
+      <div style={nftDragDrop}>
+        <form>
+        <div style={nftDropareaDesc}>
+            Drag and Drop your NFT content image
+        </div>
+
+        <div style={allowedFormats}>
+            <span style={format}>
+                JPEG
+            </span>
+            <span style={format}>
+                PNG
+            </span>
+            <span style={format}>
+                GIF
+            </span>
+        </div>
+
+        
+        <input type="file" id="upload" 
+        onChange={ e => {
+          e.preventDefault();
+         const file = e.target.files[0]
+         setSingleErc721File(e.target.files[0])
+       }}
+        hidden/>
+        <label for="upload" style={chooseLabel}>Choose file</label>
+
+        {/* <Input
           placeholder=""
           type="file"
+          id="upload"
           style={nftDroparea}
            onChange={ e => {
              e.preventDefault();
             const file = e.target.files[0]
             setSingleErc721File(e.target.files[0])
           }}
-        />
+        /> */}
+
+        </form>
+
+      </div>
+
         <Input
           value={singleErc721Title}
           placeholder="Title"
@@ -368,6 +417,16 @@ export default function LazyMint(props) {
             setSingleClaimerAddress721  (e.target.value);
           }}
         />
+
+        <Input
+          value={singleClaimerAddress721}
+          placeholder="Set the Claimers address"
+          type="text"
+          style={nftName}
+          onChange={e => {
+            setSingleClaimerAddress721  (e.target.value);
+          }}
+        />
   <br/>
     <div>Choose Collection</div>
       <label>
@@ -379,12 +438,13 @@ export default function LazyMint(props) {
             setSingleErc721Collection(e.target.value);
           }}
         />
-       Rarible
+        Rarible
         </label>
 
 
           <br/>
         <Button
+
           style={buttonMint}
           loading={singleSending721}
           size="large"
@@ -397,7 +457,6 @@ export default function LazyMint(props) {
 
             const reader = new window.FileReader()
 
-
             reader.readAsArrayBuffer(singleErc721File)
             // var pr;
 
@@ -406,12 +465,16 @@ export default function LazyMint(props) {
               const buffer = Buffer(reader.result)
               
               const r = await ipfs.add(JSON.stringify(buffer))
+              console.log("rrrrrr" + r)
               // pr =r.path
+
               setSingleErc721File(r.path)
 
-              // const back  = await getFromIPFS(r.path)
 
             }
+            // const back  = await getFromIPFS(r.path)
+
+
 
 
              const formData = {
@@ -422,12 +485,12 @@ export default function LazyMint(props) {
               singleErc721Collection: singleErc721Collection
             }
 
+
+
             setFormData(formData)
             const ipfsFinalTokenHash = await ipfs.add(JSON.stringify(formData))
             console.log( "ipfstokenhash" +  ipfsFinalTokenHash.path)
 
-
-            // console.log("formdata" + formData)
 
 
             if (!props.writeContracts) return
@@ -446,15 +509,6 @@ export default function LazyMint(props) {
           Mint
         </Button>
 
-          {/* <Card title={
-              <div>
-                <span style={{ fontSize: 16, marginRight: 8 }}>Token ID: {erc721TokenId}</span>
-              </div>
-            } X>
-            <div>
-              <p>Contract: {erc721ContractAddress}</p>
-            </div>
-          </Card> */}
 
 
           <div>

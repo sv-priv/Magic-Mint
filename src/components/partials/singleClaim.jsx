@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 
 export default function (data){
-    console.log(data)
     const card = {
         width: "260px",
 
@@ -24,7 +23,6 @@ export default function (data){
         overflow: "hidden",
         textOverflow: "ellipsis",
     }
-
     const claimButton = {
         padding: "1px 20px 10px 10px",
         fontFamily: "Whyte",
@@ -37,7 +35,6 @@ export default function (data){
 
 
     }
-
     const authorEarning = {
         textAlign: "left",
         paddingLeft:  "15px"
@@ -52,8 +49,7 @@ export default function (data){
         fontWeight: "normal",
         fontSize: "21px",
         color: "#313439"
-    }
-    
+    }  
     const cardGroup = {
         borderRadius: "20px"
     }
@@ -128,12 +124,20 @@ export default function (data){
         lineHeight: "120%"
     }
 
+    async function claimNFT(){
+        
+        
+    }
+
+    console.log("each user data", data.data.meta.image.url.ORIGINAL)
+
     return(
         <div>
                 <div style={card}>
-                    <div style={cardImgTop} alt=""></div>
+                    <img style={cardImgTop} alt="" src={data.data.meta.image.url.ORIGINAL}>
+                    </img>
                     <div  style={cardBody}>
-                            <div class="row" style={titleEarning}>
+                            <div className="row" style={titleEarning}>
                                 <div className="col-md-8 col-lg-8">
                                     {data.data.name}
                                 </div>
@@ -150,12 +154,12 @@ export default function (data){
                         <div >
                             <div style={authorEarning}>From:
                             <div style={addressFrom}>
-                                {data.data.from} 
+                                {data.data.creators[0].account} 
                              </div>
                              </div>
-                            <div style={authorEarning}>Token: 
+                            <div style={authorEarning}>Name: 
                             <div style={addressFrom}>
-                                {data.data.tokenID} 
+                                {data.data.meta.name} 
                              </div>                            
                             </div>
 
@@ -163,7 +167,7 @@ export default function (data){
                         <div className="row " style={earningPrice}>
 
                             <div>
-                                <button style={claimButton}>
+                                <button style={claimButton} onClick={claimNFT}>
                                     Claim
                                 </button>
                             </div>

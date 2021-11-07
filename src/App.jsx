@@ -162,7 +162,10 @@ function App(props) {
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localProvider);
-  const address = useUserAddress(userProvider);
+  var address = useUserAddress(userProvider);
+
+
+  console.log("adresa" + address)
 
   // You can warn the user if you would like them to be on a specific network
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
@@ -216,79 +219,7 @@ function App(props) {
   const yourBalance = balance && balance.toNumber && balance.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
 
-  useEffect(() => {
-    const updateYourCollectibles = async () => {
-      const collectibleUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-        try {
-          console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
-
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
-          try {
-            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-          } catch (e) {
-            console.log(e);
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setYourCollectibles(collectibleUpdate);
-    };
-    updateYourCollectibles();
-  }, [address, yourBalance]);
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
-
-  //
-  // 🧫 DEBUG 👨🏻‍🔬
-  //
-  // useEffect(() => {
-  //   if (
-  //     DEBUG &&
-  //     mainnetProvider &&
-  //     address &&
-  //     selectedChainId &&
-  //     yourLocalBalance &&
-  //     yourMainnetBalance &&
-  //     readContracts &&
-  //     writeContracts &&
-  //     mainnetDAIContract
-  //   ) {
-  //     console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
-  //     console.log("🌎 mainnetProvider", mainnetProvider);
-  //     console.log("🏠 localChainId", localChainId);
-  //     console.log("👩‍💼 selected address:", address);
-  //     console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-  //     console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
-  //     console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
-  //     console.log("📝 readContracts", readContracts);
-  //     console.log("🌍 DAI contract on mainnet:", mainnetDAIContract);
-  //     console.log("🔐 writeContracts", writeContracts);
-  //   }
-  // }, [
-  //   mainnetProvider,
-  //   address,
-  //   selectedChainId,
-  //   yourLocalBalance,
-  //   yourMainnetBalance,
-  //   readContracts,
-  //   writeContracts,
-  //   mainnetDAIContract,
-  // ]);
+ 
 
   let networkDisplay = "";
   if (localChainId && selectedChainId && localChainId !== selectedChainId) {
@@ -401,15 +332,24 @@ function App(props) {
     paddingTop:"6%",
     minHeight: "100vh",
   }
+  
   return (
     <div className="App" style={appBody}>
-      {/* ✏️ Edit the header and change the title to your project name */}
       {networkDisplay}
       <BrowserRouter>
         <Header />
-          <Route path= "/" exact>
-            <LazyMint/>
-          </Route> 
+          <Route path="/" exact>
+            <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
+                        <LazyMint
+                          ensProvider={mainnetProvider}
+                          provider={userProvider}
+                          // contractAddress={writeContracts.ERC721Rarible.address}
+                          // contractAddress={writeContracts.YourCollectible.address}
+                          writeContracts={writeContracts}
+                          accountAddress={address}
+                        ></LazyMint>
+                </div>
+              </Route> 
           <Route path= "/menu" exact>
           <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/mint">
@@ -468,91 +408,7 @@ function App(props) {
       
 
         <Switch>
-          <Route exact path="/">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
 
-            <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <List
-                bordered
-                dataSource={yourCollectibles}
-                renderItem={item => {
-                  const id = item.id.toNumber();
-                  return (
-                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                      <Card
-                        title={
-                          <div>
-                            <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
-                          </div>
-                        }
-                      >
-                        <div>
-                          <img src={item.image} style={{ maxWidth: 150 }} />
-                        </div>
-                        <div>{item.description}</div>
-                      </Card>
-
-                      <div>
-                        owner:{" "}
-                        <Address
-                          address={item.owner}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="transfer to address"
-                          value={transferToAddresses[id]}
-                          onChange={newValue => {
-                            const update = {};
-                            update[id] = newValue;
-                            setTransferToAddresses({ ...transferToAddresses, ...update });
-                          }}
-                        />
-                        <Button
-                          onClick={() => {
-                            // console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
-                          }}
-                        >
-                          Transfer
-                        </Button>
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="approve address"
-                          value={approveAddresses[id]}
-                          onChange={newValue => {
-                            const update = {};
-                            update[id] = newValue;
-                            setApproveAddresses({ ...approveAddresses, ...update });
-                          }}
-                        />
-                        <Button
-                          onClick={() => {
-                            // console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.approve(approveAddresses[id], id));
-                          }}
-                        >
-                          Approve
-                        </Button>
-                        <Sell
-                          provider={userProvider}
-                          accountAddress={address}
-                          ERC721Address={writeContracts.YourCollectible.address}
-                          tokenId={id}
-                        ></Sell>
-                      </div>
-                    </List.Item>
-                  );
-                }}
-              />
-            </div>
-          </Route>
           <Route path="/mint">
             <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
                         <Mint
@@ -563,6 +419,7 @@ function App(props) {
             </div>
 
           </Route>
+
           <Route path="/lazyMint">
             <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
                         <LazyMint
@@ -574,8 +431,8 @@ function App(props) {
                           accountAddress={address}
                         ></LazyMint>
             </div>
-
           </Route>
+
           <Route path="/claims" exact>
             <div style={{  width: "1300px", margin: "auto" }}>
                         <Claims
@@ -764,6 +621,9 @@ function App(props) {
 
 
         </Switch>
+        
+        
+        
         <Footer />
 
       </BrowserRouter>

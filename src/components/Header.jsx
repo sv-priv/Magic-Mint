@@ -41,7 +41,7 @@ export default function Header() {
     <div>
       <div  style={navigation} className="row landing navigation">
         <div className="col-md-4 col-lg-4">
-          <Link className="text-link" to="/lazyMint">
+          <Link className="text-link" to="/">
               <span style={logo}>
                     Magic Mint
               </span>
@@ -49,8 +49,8 @@ export default function Header() {
         </div>
 
         <div className="col-md-4 col-lg-4 ">
-          <Link className="text-link" to="/lazyMint"><span  style= {navItem }>Mint</span></Link>
-          <Link className="text-link" to="/claims"><span style ={ navItem } >Claims</span></Link>
+          <Link className="text-link" to="/"><span  style= {navItem }>Create</span></Link>
+          <Link className="text-link" to="/claims"><span style ={ navItem } >Claim</span></Link>
         </div>
         <div className="col-md-7 col-lg-7">
         </div>
