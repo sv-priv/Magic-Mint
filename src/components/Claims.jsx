@@ -6,7 +6,9 @@ export default function Claims (){
 
 
     const [ userOwnedItems , setUserOwnedItems ] = useState();
-
+    const  bodyStyle = {
+        minHeight: "700px"
+    }
 
     const noClaimsAvailable = {
         textAlign: "center",
@@ -17,19 +19,12 @@ export default function Claims (){
         textTransform: "uppercase"
     }
 
-    function handleClaim(event){
-
-        
-
-    }
-
 
     const claimsRow = []
 
     useEffect(() => {
         async function fetchData(){
             const response  = await fetch('https://ethereum-api.rarible.org/v0.1/nft/items/byOwner?owner=0x559441FEf78b7E27b66db69C11e5B3827e1aea96&includeMeta=false')
-    
             const userOwnedNfts = await response.json();
             const  items = userOwnedNfts.items;
             setUserOwnedItems(items)
@@ -38,22 +33,25 @@ export default function Claims (){
 
     }, []);
 
+    function handleClaim(data, index){
+        let filtered = userOwnedItems.filter(function(userOwnedItem, index) {
+            return data != index;
+          })
+        setUserOwnedItems(filtered)
+    }   
+
 
 
 
     if(userOwnedItems){
-
-        for (let i = 0;i<userOwnedItems.length;i++){
-
-            if(userOwnedItems[i]){
+        userOwnedItems.map((userOwnedItem, index) => {
             claimsRow.push(
                 <div className="col-md-3 col-lg-3">
-                <SingleClaim data={userOwnedItems[i]}/>
-            </div> 
-         
+                    
+                <SingleClaim index={index} data={userOwnedItem} handleClaim={handleClaim}/>
+                </div> 
             )   
-            }
-        }
+        })
     }else{
         claimsRow.push(
             <div style={noClaimsAvailable} className="col-md-12 col-lg-12">
@@ -68,7 +66,7 @@ export default function Claims (){
 
     return(
 
-        <div>
+        <div style={bodyStyle}>
 
             <div className="row" style={{width: "1300px", margin: "0px 300px 0px 0px", marginTop:"6%"} } >
                 {claimsRow}

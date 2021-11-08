@@ -164,9 +164,6 @@ function App(props) {
   const userProvider = useUserProvider(injectedProvider, localProvider);
   var address = useUserAddress(userProvider);
 
-
-  console.log("adresa" + address)
-
   // You can warn the user if you would like them to be on a specific network
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
   const selectedChainId = userProvider && userProvider._network && userProvider._network.chainId;
@@ -180,10 +177,10 @@ function App(props) {
   const faucetTx = Transactor(localProvider, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
+  // const yourLocalBalance = useBalance(localProvider, address);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
+  // const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider);
@@ -216,7 +213,7 @@ function App(props) {
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
-  const yourBalance = balance && balance.toNumber && balance.toNumber();
+  // const yourBalance = balance && balance.toNumber && balance.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
 
  
@@ -283,35 +280,7 @@ function App(props) {
     setRoute(window.location.pathname);
   }, [setRoute]);
 
-  let faucetHint = "";
-  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name == "localhost";
-
-  const [faucetClicked, setFaucetClicked] = useState(false);
-  if (
-    !faucetClicked &&
-    localProvider &&
-    localProvider._network &&
-    localProvider._network.chainId == 31337 &&
-    yourLocalBalance &&
-    formatEther(yourLocalBalance) <= 0
-  ) {
-    faucetHint = (
-      <div style={{ padding: 16 }}>
-        <Button
-          type="primary"
-          onClick={() => {
-            faucetTx({
-              to: address,
-              value: parseEther("0.01"),
-            });
-            setFaucetClicked(true);
-          }}
-        >
-          💰 Grab funds from the faucet ⛽️
-        </Button>
-      </div>
-    );
-  }
+ 
 
   const [yourJSON, setYourJSON] = useState(STARTING_JSON);
   const [sending, setSending] = useState();
@@ -435,7 +404,7 @@ function App(props) {
 
           <Route path="/claims" exact>
             <div style={{  width: "1300px", margin: "auto" }}>
-                        <Claims
+                      <Claims
                           ensProvider={mainnetProvider}
                           provider={userProvider}
                           // contractAddress={writeContracts.ERC721Rarible.address}
@@ -643,7 +612,6 @@ function App(props) {
           logoutOfWeb3Modal={logoutOfWeb3Modal}
           blockExplorer={blockExplorer}
         />
-        {faucetHint}
       </div>
 
     </div>

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 
 export default function (data){
+
     const card = {
         width: "260px",
 
@@ -124,13 +125,10 @@ export default function (data){
         lineHeight: "120%"
     }
 
-    async function claimNFT(){
-        
-        
+    async function claimNFT(e){
+        data.handleClaim(data.index)
     }
-
-    console.log("each user data", data.data.meta.image.url.ORIGINAL)
-
+    
     return(
         <div>
                 <div style={card}>
@@ -157,20 +155,18 @@ export default function (data){
                                 {data.data.creators[0].account} 
                              </div>
                              </div>
-                            <div style={authorEarning}>Name: 
+                            {/* <div style={authorEarning}>Name: 
                             <div style={addressFrom}>
                                 {data.data.meta.name} 
                              </div>                            
-                            </div>
+                            </div> */}
 
                         </div>
-                        <div className="row " style={earningPrice}>
+                        <div className="row" style={earningPrice}>
 
-                            <div>
                                 <button style={claimButton} onClick={claimNFT}>
                                     Claim
                                 </button>
-                            </div>
 
                         </div>
                     </div>

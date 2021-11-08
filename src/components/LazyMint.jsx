@@ -321,9 +321,8 @@ export default function LazyMint(props) {
   // on first render +  whenever dependency formData is updated
   useEffect(()=>{
 
-      // console.log("from use effect " + singleErc721File)
+      console.log("from use effect " + singleErc721File)
 
-      // console.log("minted use effect")
       // console.log("form",formData)
 
   },[ formData])
@@ -360,7 +359,8 @@ export default function LazyMint(props) {
         <input type="file" id="upload" 
         onChange={ e => {
           e.preventDefault();
-         const file = e.target.files[0]
+          console.log(e.target.files[0])
+          const file = e.target.files[0]
          setSingleErc721File(e.target.files[0])
        }}
         hidden/>
