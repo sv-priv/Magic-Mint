@@ -45,13 +45,19 @@ async function createLazyMintForm(tokenId, contract, minter, ipfsHash, type, sup
 }
 
 export async function createLazyMint(tokenId, provider, contract, minter, ipfsHash, type, supply) {
+
+  console.log("in")
   const form = await createLazyMintForm(tokenId, contract, minter, ipfsHash, type, supply)
+
+  console.log("the nft forrm", form)
   const signature = await sign(provider, 3, contract, form, minter, type)
   console.log("what is the signature " + signature)
-	return { ...form, signatures: [signature] }
+	// return { ...form, signatures: [signature] }
 }
 
 export async function putLazyMint(form) {
+
+  console.log("we are here")
   const raribleMintUrl = `${RARIBLE_BASE_URL}nft/mints`
   const raribleMintResult = await fetch(raribleMintUrl, {
     method: "POST",

@@ -17,7 +17,7 @@ const DOMAIN_TYPE = [
   }
 ];
 
-export default    {
+module.exports = {
   createTypeData: function (domainData, primaryType, message, types) {
     return {
       types: Object.assign({

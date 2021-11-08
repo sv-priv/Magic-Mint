@@ -231,11 +231,9 @@ export default function LazyMint(props) {
     marginTop: "80px",
   }
   
-  // const sdk = createRaribleSdk(props.provider, "prod")
-
-
   const getFromIPFS = async hashToGet => {
     for await (const file of ipfs.get(hashToGet)) {
+      console.log(file.path)
 
       if (!file.content) continue;
       const content = new BufferList();
@@ -245,6 +243,12 @@ export default function LazyMint(props) {
       return content;
     }
   };
+  const getFromIpfsGateway = async hashToGet => {
+    const response = await fetch(`https://ipfs.io/ipfs/${hashToGet}`);
+  
+    return response.json();
+  };
+  
   
 
   const [erc721ContractAddress, setErc721ContractAddress] = React.useState();
@@ -321,9 +325,7 @@ export default function LazyMint(props) {
   // on first render +  whenever dependency formData is updated
   useEffect(()=>{
 
-      console.log("from use effect " + singleErc721File)
-
-      // console.log("form",formData)
+      console.log("from use effect IPFS HASH", singleErc721File)
 
   },[ formData])
 
@@ -331,7 +333,6 @@ export default function LazyMint(props) {
     <div>
 
 
-    { singleNFT ? 
     <div>
       <div style={createDesc}>
         Create NFT
@@ -414,68 +415,52 @@ export default function LazyMint(props) {
           type="text"
           style={nftName}
           onChange={e => {
-            setSingleClaimerAddress721  (e.target.value);
+            setSingleClaimerAddress721(e.target.value);
           }}
         />
-
-        <Input
-          value={singleClaimerAddress721}
-          placeholder="Set the Claimers address"
-          type="text"
-          style={nftName}
-          onChange={e => {
-            setSingleClaimerAddress721  (e.target.value);
-          }}
-        />
-  <br/>
-    <div>Choose Collection</div>
-      <label>
-        <Input
-          value={singleErc721Collection}
-          placeholder=""
-          type="checkbox"
-          onChange={e => {
-            setSingleErc721Collection(e.target.value);
-          }}
-        />
+      <br/>
+        <div>Choose Collection</div>
+        <label>
+          <Input
+            value={singleErc721Collection}
+            placeholder=""
+            type="checkbox"
+            onChange={e => {
+              setSingleErc721Collection("Rarible");
+            }}
+          />
         Rarible
         </label>
 
 
           <br/>
         <Button
-
           style={buttonMint}
           loading={singleSending721}
           size="large"
           shape="round"
           type="primary"
           onClick={async () => {
-            // send to IPFS
-
-            // get ipfs hash back
 
             const reader = new window.FileReader()
-
             reader.readAsArrayBuffer(singleErc721File)
-            // var pr;
+
+
 
             reader.onloadend = async () => {
-
               const buffer = Buffer(reader.result)
-              
               const r = await ipfs.add(JSON.stringify(buffer))
-              console.log("rrrrrr" + r)
-              // pr =r.path
-
+              console.log("rrrrrr",r)
               setSingleErc721File(r.path)
-
-
             }
+
+
+
+            // const getfrom = await ipfs.getFromIPFS(singleErc721File)
+            console.log("shit from ipfs", singleErc721File)
+
+
             // const back  = await getFromIPFS(r.path)
-
-
-
 
              const formData = {
               singleErc721File:  singleErc721File,
@@ -485,11 +470,14 @@ export default function LazyMint(props) {
               singleErc721Collection: singleErc721Collection
             }
 
+             console.log("dataform",formData)
+
 
 
             setFormData(formData)
+            
             const ipfsFinalTokenHash = await ipfs.add(JSON.stringify(formData))
-            console.log( "ipfstokenhash" +  ipfsFinalTokenHash.path)
+            console.log( "ipfsFINALtokenSShash ",ipfsFinalTokenHash.path)
 
 
 
@@ -497,9 +485,10 @@ export default function LazyMint(props) {
             setSingleSending721(true);
             const newTokenId = await generateTokenId(props.writeContracts.ERC721Rarible.address, props.accountAddress)
             setSingleErc721TokenId(newTokenId)
+            console.log("hoiii single token", newTokenId)
             setErc721ContractAddress(props.writeContracts.ERC721Rarible.address)
-            // console.log("sending");
-            const form = await createLazyMint(newTokenId, props.provider, props.writeContracts.ERC721Rarible.address, props.accountAddress, singleErc721IpfsHash, 'ERC721')
+            console.log("sending");
+            const form = await createLazyMint(newTokenId, props.provider, props.writeContracts.ERC721Rarible.address, props.accountAddress, ipfsFinalTokenHash.path, 'ERC721')
             await putLazyMint(form)
 
             console.log(form) 
@@ -516,104 +505,7 @@ export default function LazyMint(props) {
           </div>
 
     </div>
-    :
-    <div>
-      <div style={createDesc}>
-        Create multiple NFTs
-      </div>
-      <Input
-        value={multipleErc721File}
-        placeholder=""
-        type="file"
-        style={nftDroparea}
-        onChange={e => {
-          setMultipleErc721File(e.target.value);
-        }}
-      />
-      <Input
-        value={multipleErc721Title}
-        placeholder="Title"
-        type="text"
-        style={nftName}
-        onChange={e => {
-          setMultipleErc721Title(e.target.value);
-        }}
-      />
-      <Input
-        value={multipleErc721Description}
-        placeholder="Description"
-        style={nftDesc}
-        onChange={e => {
-          setMultipleErc721Description(e.target.value);
-        }}
-      />
-      <Input
-        value={multipleErc721Collection}
-        placeholder="Choose collection"
-        type="text"
-        style={nftMintpatronage}
-        onChange={e => {
-          setMultipleErc721Collection(e.target.value);
-        }}
-      />
-      <Input
-          value={multipleErc721Royalties}
-          placeholder="Royalties"
-          type="text"
-          style={nftName}
-          onChange={e => {
-            setMultipleErc721Royalties(e.target.value);
-          }}
-      />
-      <Input
-          value={multipleErc721NumberCopies}
-          placeholder="Number of copies"
-          type="text"
-          style={nftName}
-          onChange={e => {
-            setMultipleErc721NumberCopies(e.target.value);
-          }}
-      />
 
-
-
-        <br/>
-        <Button
-          style={buttonMint}
-          loading={multipleSending721}
-          size="large"
-          shape="round"
-          type="primary"
-          onClick={async () => {
-            if (!props.writeContracts) return
-            setMultipleSending721(true);
-            const newTokenId = await generateTokenId(props.writeContracts.ERC721Rarible.address, props.accountAddress)
-            setMultipleErc721TokenId(newTokenId)
-            setErc721ContractAddress(props.writeContracts.ERC721Rarible.address)
-            const form = await createLazyMint(newTokenId, props.provider, props.writeContracts.ERC721Rarible.address, props.accountAddress, multipleErc721IpfsHash, 'ERC721')
-            await putLazyMint(form)
-            setMultipleSending721(false);
-          }}
-        >
-          Mint
-        </Button>
-
-        {/* <Card
-
-          title={
-            <div>
-              <span style={{ fontSize: 16, marginRight: 8 }}>Token ID: {singleErc721TokenId}</span>
-            </div>
-            } 
-          >
-          <div>
-            <p>Contract: {erc721ContractAddress}</p>
-          </div>
-        </Card> */}
-
-  </div>
-
-  }
 
   </div>
     
