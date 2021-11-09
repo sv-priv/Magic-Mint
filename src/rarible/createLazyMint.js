@@ -18,7 +18,7 @@ export async function generateTokenId(contract, minter) {
 
 async function createLazyMintForm(tokenId, contract, minter, ipfsHash, type, supply) {
   // const tokenId = await generateTokenId(contract, minter)
-	console.log("generated tokenId", tokenId)
+	// console.log("generated tokenId", tokenId)
   if (type == "ERC721") {
 	return {
 		"@type": "ERC721",
@@ -52,14 +52,17 @@ export async function createLazyMint(tokenId, provider, contract, minter, ipfsHa
   console.log("the nft forrm", form)
   const signature = await sign(provider, 3, contract, form, minter, type)
   console.log("what is the signature " + signature)
-	// return { ...form, signatures: [signature] }
+	return { ...form, signatures: [signature] }
 }
 
 export async function putLazyMint(form) {
 
   console.log("we are here")
+  console.log("oh its the forn", form)
   const raribleMintUrl = `${RARIBLE_BASE_URL}nft/mints`
-  const raribleMintResult = await fetch(raribleMintUrl, {
+
+  console.log(raribleMintUrl)
+  const raribleMintResult = await fetch("https://api-staging.rarible.com/protocol/v0.1/ethereum/nft/mints", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

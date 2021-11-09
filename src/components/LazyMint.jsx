@@ -319,6 +319,7 @@ export default function LazyMint(props) {
     // const creations = sdk.apis.item.getItemsByCreator({ creator: "0x559441FEf78b7E27b66db69C11e5B3827e1aea96" })
     // console.log("apis",sdk.apis.nftItem.getNftItemsByCreator("0x559441FEf78b7E27b66db69C11e5B3827e1aea96" ))
     console.log("on first  render/ mount")
+    console.log("napisani dog", props.writeContracts)
 
   },[])
 
@@ -489,6 +490,9 @@ export default function LazyMint(props) {
             setErc721ContractAddress(props.writeContracts.ERC721Rarible.address)
             console.log("sending");
             const form = await createLazyMint(newTokenId, props.provider, props.writeContracts.ERC721Rarible.address, props.accountAddress, ipfsFinalTokenHash.path, 'ERC721')
+
+
+            console.log("the form in lazy",form)
             await putLazyMint(form)
 
             console.log(form) 

@@ -17,8 +17,8 @@ const DOMAIN_TYPE = [
   }
 ];
 
-module.exports = {
-  createTypeData: function (domainData, primaryType, message, types) {
+
+ export function createTypeData(domainData, primaryType, message, types) {
     return {
       types: Object.assign({
         EIP712Domain: DOMAIN_TYPE,
@@ -27,9 +27,9 @@ module.exports = {
       primaryType: primaryType,
       message: message
     };
-  },
+  }
 
-  signTypedData: async function (provider, from, data) {
+  export async function signTypedData(provider, from, data) {
     const msgData = JSON.stringify(data);
     const sig = await provider.send("eth_signTypedData_v4", [from, msgData]);
     const sig0 = sig.substring(2);
@@ -44,4 +44,3 @@ module.exports = {
       s,
     };
   }
-};

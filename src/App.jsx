@@ -280,6 +280,8 @@ function App(props) {
     setRoute(window.location.pathname);
   }, [setRoute]);
 
+
+  
  
 
   const [yourJSON, setYourJSON] = useState(STARTING_JSON);
@@ -312,8 +314,6 @@ function App(props) {
                         <LazyMint
                           ensProvider={mainnetProvider}
                           provider={userProvider}
-                          // contractAddress={writeContracts.ERC721Rarible.address}
-                          // contractAddress={writeContracts.YourCollectible.address}
                           writeContracts={writeContracts}
                           accountAddress={address}
                         ></LazyMint>
@@ -394,8 +394,6 @@ function App(props) {
                         <LazyMint
                           ensProvider={mainnetProvider}
                           provider={userProvider}
-                          // contractAddress={writeContracts.ERC721Rarible.address}
-                          // contractAddress={writeContracts.YourCollectible.address}
                           writeContracts={writeContracts}
                           accountAddress={address}
                         ></LazyMint>
@@ -407,8 +405,6 @@ function App(props) {
                       <Claims
                           ensProvider={mainnetProvider}
                           provider={userProvider}
-                          // contractAddress={writeContracts.ERC721Rarible.address}
-                          // contractAddress={writeContracts.YourCollectible.address}
                           writeContracts={writeContracts}
                           accountAddress={address}
                 ></Claims>
