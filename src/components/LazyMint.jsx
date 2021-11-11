@@ -491,7 +491,7 @@ export default function LazyMint(props) {
             const mintDatabaseForm = {
               tokenID: newTokenId,
               creator: props.accountAddress,
-              constract: props.writeContracts.ERC721Rarible.address,
+              contract: props.writeContracts.ERC721Rarible.address,
               claimer: singleClaimerAddress721,
             }
 
@@ -517,11 +517,7 @@ export default function LazyMint(props) {
           Mint
         </Button>
 
-
-
-
-          <div>
-
+           <div>
           </div>
 
     </div>
