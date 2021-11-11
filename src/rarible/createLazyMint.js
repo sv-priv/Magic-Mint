@@ -16,8 +16,9 @@ export async function generateTokenId(contract, minter) {
 	return resJson.tokenId
 }
 
-async function createLazyMintForm(tokenId, contract, minter, ipfsHash, type, supply) {
+async function createLazyMintForm(tokenId, contract, minter, ipfsHash, type, supply, claimer) {
   // const tokenId = await generateTokenId(contract, minter)
+  //add claimer
 	// console.log("generated tokenId", tokenId)
   if (type == "ERC721") {
 	return {
@@ -25,7 +26,7 @@ async function createLazyMintForm(tokenId, contract, minter, ipfsHash, type, sup
 		contract: contract,
 		tokenId: tokenId,
 		uri: `/ipfs/${ipfsHash}`,
-		creators: [{ account: minter, value: "10000" }],
+		creators: [{ account: minter, value: "10000" , claimer: claimer}],
 		royalties: []
 	}
 
@@ -44,10 +45,10 @@ async function createLazyMintForm(tokenId, contract, minter, ipfsHash, type, sup
   }
 }
 
-export async function createLazyMint(tokenId, provider, contract, minter, ipfsHash, type, supply) {
+export async function createLazyMint(tokenId, provider, contract, minter, ipfsHash, type, supply,claimer) {
+//add claimer
 
-  console.log("in")
-  const form = await createLazyMintForm(tokenId, contract, minter, ipfsHash, type, supply)
+const form = await createLazyMintForm(tokenId, contract, minter, ipfsHash, type, supply, claimer)
 
   console.log("the nft forrm", form)
   const signature = await sign(provider, 3, contract, form, minter, type)
@@ -57,17 +58,16 @@ export async function createLazyMint(tokenId, provider, contract, minter, ipfsHa
 
 export async function putLazyMint(form) {
 
-  console.log("we are here")
-  console.log("oh its the forn", form)
+  console.log("the  form while putting lazymint", form)
   const raribleMintUrl = `${RARIBLE_BASE_URL}nft/mints`
 
   console.log(raribleMintUrl)
-  const raribleMintResult = await fetch("https://api-staging.rarible.com/protocol/v0.1/ethereum/nft/mints", {
+  const raribleMintResult = await fetch("https://ethereum-api-dev.rarible.org/v0.1/nft/mints", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(form),
   });
-  console.log({raribleMintResult})
+  console.log(raribleMintResult.formData)
 }

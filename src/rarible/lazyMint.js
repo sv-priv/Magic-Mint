@@ -28,6 +28,7 @@ const ERC1155Types = {
 };
 
 export async function sign(provider, chainId, contractAddress, form, account, type) {
+	//add claimer
 	let data
 	if (type === 'ERC721') {
 	data = EIP712.createTypeData({

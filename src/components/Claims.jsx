@@ -22,9 +22,11 @@ export default function Claims (){
 
     const claimsRow = []
 
+    const myAddress = "0x559441FEf78b7E27b66db69C11e5B3827e1aea96"
+    
     useEffect(() => {
         async function fetchData(){
-            const response  = await fetch('https://ethereum-api.rarible.org/v0.1/nft/items/byOwner?owner=0x559441FEf78b7E27b66db69C11e5B3827e1aea96&includeMeta=false')
+            const response  = await fetch(`https://ethereum-api.rarible.org/v0.1/nft/items/byOwner?owner=${myAddress}&includeMeta=false`)
             const userOwnedNfts = await response.json();
             const  items = userOwnedNfts.items;
             setUserOwnedItems(items)

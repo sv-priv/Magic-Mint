@@ -342,7 +342,7 @@ export default function LazyMint(props) {
       <div style={nftDragDrop}>
         <form>
         <div style={nftDropareaDesc}>
-            Drag and Drop your NFT content image
+            Upload your NFT content image
         </div>
 
         <div style={allowedFormats}>
@@ -443,42 +443,28 @@ export default function LazyMint(props) {
           type="primary"
           onClick={async () => {
 
-            const reader = new window.FileReader()
-            reader.readAsArrayBuffer(singleErc721File)
 
+            const r = await ipfs.add(singleErc721File)
 
-
-            reader.onloadend = async () => {
-              const buffer = Buffer(reader.result)
-              const r = await ipfs.add(JSON.stringify(buffer))
-              console.log("rrrrrr",r)
-              setSingleErc721File(r.path)
-            }
-
-
-
-            // const getfrom = await ipfs.getFromIPFS(singleErc721File)
-            console.log("shit from ipfs", singleErc721File)
-
-
-            // const back  = await getFromIPFS(r.path)
+            console.log("rrrrrr",r)
+            setSingleErc721File(r.path)
+            
+            console.log("image on ipfs ", singleErc721File)
 
              const formData = {
-              singleErc721File:  singleErc721File,
-              singleErc721Title: singleErc721Title,
-              singleErc721Description: singleErc721Description,
-              singleErc721Royalties: singleErc721Royalties,
-              singleErc721Collection: singleErc721Collection
+              name: singleErc721Title,
+              description: singleErc721Description,
+              image: r.path,
+              attributes:{
+              }
             }
-
-             console.log("dataform",formData)
-
-
-
             setFormData(formData)
+
+            console.log("dataform to be uploadedd to ipfs" ,formData)
             
-            const ipfsFinalTokenHash = await ipfs.add(JSON.stringify(formData))
-            console.log( "ipfsFINALtokenSShash ",ipfsFinalTokenHash.path)
+            const ipfsMetadataHash= await ipfs.add(JSON.stringify(formData))
+
+            console.log( "full data uploaded to ipfs ", ipfsMetadataHash.path)
 
 
 
@@ -486,17 +472,25 @@ export default function LazyMint(props) {
             setSingleSending721(true);
             const newTokenId = await generateTokenId(props.writeContracts.ERC721Rarible.address, props.accountAddress)
             setSingleErc721TokenId(newTokenId)
-            console.log("hoiii single token", newTokenId)
+
+            console.log("this is the single token ID", newTokenId)
+
             setErc721ContractAddress(props.writeContracts.ERC721Rarible.address)
+
             console.log("sending");
-            const form = await createLazyMint(newTokenId, props.provider, props.writeContracts.ERC721Rarible.address, props.accountAddress, ipfsFinalTokenHash.path, 'ERC721')
 
+            const form = await createLazyMint(newTokenId, props.provider, props.writeContracts.ERC721Rarible.address, props.accountAddress, ipfsMetadataHash.path, 'ERC721', singleClaimerAddress721)
 
-            console.log("the form in lazy",form)
+            console.log("the form set to lazyminting", form)
+
             await putLazyMint(form)
 
-            console.log(form) 
             setSingleSending721(false);
+
+
+            const response  = await fetch(`https://ethereum-api-dev.rarible.org/v0.1/nft/items/${props.writeContracts.ERC721Rarible.address}:${newTokenId}/lazy`)
+
+            console.log("fetched data",response.toString())
           }}
         >
           Mint
