@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import SingleClaim from "./partials/singleClaim";
 
 
-export default function Claims (){
-
+export default function Claims (props){
 
     const [ userOwnedItems , setUserOwnedItems ] = useState();
+
     const  bodyStyle = {
         minHeight: "700px"
     }
@@ -21,16 +21,21 @@ export default function Claims (){
 
 
     const claimsRow = []
-
     const myAddress = "0x559441FEf78b7E27b66db69C11e5B3827e1aea96"
-    
+
     useEffect(() => {
         async function fetchData(){
-            const response  = await fetch(`https://ethereum-api.rarible.org/v0.1/nft/items/byOwner?owner=${myAddress}&includeMeta=false`)
+            const response  = await fetch(`https://ethereum-api.rarible.org/v0.1/nft/items/byOwner?owner=${props.accountAddress}&includeMeta=false`);
+
+            const allClaimableItems = await fetch(`https://magic-mint-api.herokuapp.com/api/721/single_lazy_mint_controller/all`);
+
+            const allClaimableItemsJson =  await allClaimableItems.json()
+            console.log("claims", allClaimableItemsJson)
             const userOwnedNfts = await response.json();
             const  items = userOwnedNfts.items;
             setUserOwnedItems(items)
         }
+
         fetchData()
 
     }, []);

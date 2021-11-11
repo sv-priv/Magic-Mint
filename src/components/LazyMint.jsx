@@ -410,9 +410,10 @@ export default function LazyMint(props) {
             setSingleErc721Royalties(e.target.value);
           }}
         />
+        <div>Claimer:</div>
         <Input
           value={singleClaimerAddress721}
-          placeholder="Set the Claimers address"
+          placeholder="Enter an Ethereum address"
           type="text"
           style={nftName}
           onChange={e => {
@@ -483,18 +484,39 @@ export default function LazyMint(props) {
 
             console.log("the form set to lazyminting", form)
 
+
+
             await putLazyMint(form)
+
+            const mintDatabaseForm = {
+              tokenID: newTokenId,
+              creator: props.accountAddress,
+              constract: props.writeContracts.ERC721Rarible.address,
+              claimer: singleClaimerAddress721,
+            }
+
+            const mintToDatabase = await fetch("https://magic-mint-api.herokuapp.com/api/721/single_lazy_mint_controller/create", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(mintDatabaseForm),
+            });
 
             setSingleSending721(false);
 
 
             const response  = await fetch(`https://ethereum-api-dev.rarible.org/v0.1/nft/items/${props.writeContracts.ERC721Rarible.address}:${newTokenId}/lazy`)
 
-            console.log("fetched data",response.toString())
+            console.log("fetched data", response.json())
+
+
+
           }}
         >
           Mint
         </Button>
+
 
 
 
