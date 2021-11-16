@@ -501,6 +501,7 @@ export default function LazyMint(props) {
               creator: props.accountAddress,
               contract: props.writeContracts.ERC721Rarible.address,
               claimer: singleClaimerAddress721,
+              isMinted: false
             }
 
             const mintToDatabase = await fetch("https://magic-mint-api.herokuapp.com/api/721/single_lazy_mint_controller/create", {

@@ -21,7 +21,7 @@ export default function Claims (props){
     }
 
 
-    const claimsRow = []
+    let claimsRow = []
     const myAddress = "0x559441FEf78b7E27b66db69C11e5B3827e1aea96"
 
     async function fetchData(){
@@ -77,8 +77,41 @@ export default function Claims (props){
 
             }
           })
+
+        
+        const updateDatabaseOnMint = await fetch("https://magic-mint-api.herokuapp.com/api/721/single_lazy_mint_controller/update", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({tokenID: claimTokenData.tokenID}),
+        });
+
         setUserClaimableItems(filtered)
     }   
+
+
+    useEffect(() =>{
+        claimsRow = []
+        
+        if(userClaimableItems){
+            userClaimableItems.map((userClaimableItem, index) => {
+                claimsRow.push(
+                    <div className="col-md-3 col-lg-3">
+                        
+                    <SingleClaim index={index} data={userClaimableItem} handleClaim={handleClaim}/>
+                    </div> 
+                )   
+            })
+        }else{
+            claimsRow.push(
+                <div style={noClaimsAvailable} className="col-md-12 col-lg-12">
+                        No items to claim. :(
+                </div>  
+            )
+        }
+    },[userClaimableItems])
+
 
 
 
@@ -99,9 +132,6 @@ export default function Claims (props){
             </div>  
         )
     }
-
-
-
 
 
     return(
