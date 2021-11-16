@@ -14,6 +14,14 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 export default function LazyMint(props) {
 
+  const writeContracts = props.writeContracts
+
+
+  useEffect(() =>{
+    console.log("dogovori",writeContracts)
+
+  },[])
+
   const sdk = createRaribleSdk(props.provider, "mainnet", { fetchApi: fetch })
 
 
@@ -503,11 +511,26 @@ export default function LazyMint(props) {
               body: JSON.stringify(mintDatabaseForm),
             });
 
+         
             setSingleSending721(false);
 
+            if(mintToDatabase && !singleSending721){
+              alert("You created an nft")
+              setSingleErc721File(null)
+              setSingleErc721Title(null);
+
+              setSingleErc721Description(null);
+              setSingleErc721Royalties(null);
+              setSingleClaimerAddress721(null );
+              setSingleErc721Collection(null);
+
+
+              
+            }
 
             const response  = await fetch(`https://ethereum-api-dev.rarible.org/v0.1/nft/items/${props.writeContracts.ERC721Rarible.address}:${newTokenId}/lazy`)
 
+            
             console.log("fetched data", response.json())
 
 

@@ -1,9 +1,24 @@
 import { BulbFilled } from "@ant-design/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+const ipfsAPI = require('ipfs-http-client');
+const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
+
 
 
 export default function (data){
+    
+
+    const [singleTokenData, setSingleTokenData] = useState()
+    const [singleTokenImage, setSingleTokenImage] = useState()
+    const [singleTokenClaimer, setSingleTokenClaimer] = useState()
+    const [singleTokenName, setSingleTokenName] = useState()
+    const [singleTokenDescription, setSingleTokenDescription] = useState()
+    const [singleTokenUri, setSingleTokenUri] = useState()
+
+
+
+    
 
     const card = {
         width: "260px",
@@ -126,13 +141,67 @@ export default function (data){
     }
 
     async function claimNFT(e){
-        data.handleClaim(data.index)
+
+
+
+        const claimTokenData ={
+            claimer: data.data.claimer,
+            index: data.index,
+            tokenID: data.data.tokenID,
+            uri: singleTokenUri
+        }
+
+        data.handleClaim(claimTokenData)
     }
+
+    useEffect( () =>{
+
+        console.log("data", data)
+
+        async function fetchSingleTokenData (){
+            
+            const singleToken = await fetch(`https://ethereum-api-dev.rarible.org/v0.1/nft/items/0xB0EA149212Eb707a1E5FC1D2d3fD318a8d94cf05:${data.data.tokenID}/lazy`)
+            
+            
+            const singleTokenMeta = await singleToken.json()
+
+
+            setSingleTokenUri(singleTokenMeta.uri)
+
+            // console.log("single token claimer on API" , data.data.claimer)
+            setSingleTokenClaimer(data.data.claimer)
+
+
+
+
+            let singleTokenIPFS =  await fetch(`https://ipfs.io/${singleTokenMeta.uri}`)
+            singleTokenIPFS = await singleTokenIPFS.json()
+
+            
+            const singleTokenImageLink = `https://ipfs.io/ipfs/${singleTokenIPFS.image}`
+
+            setSingleTokenImage(singleTokenImageLink)
+
+            // console.log(singleTokenImageLink)
+
+
+
+            setSingleTokenClaimer()
+
+            // console.log("single", data.data.tokenID, singleTokenMeta.uri)
+
+            
+        }
+
+        fetchSingleTokenData()
+
+
+    },[])
     
     return(
         <div>
                 <div style={card}>
-                    <img style={cardImgTop} alt="" src={data.data.meta.image.url.ORIGINAL}>
+                    <img style={cardImgTop} alt="" src={singleTokenImage}>
                     </img>
                     <div  style={cardBody}>
                             <div className="row" style={titleEarning}>
@@ -150,9 +219,9 @@ export default function (data){
 
                             </div>
                         <div >
-                            <div style={authorEarning}>From:
+                            <div style={authorEarning}>TokenID:
                             <div style={addressFrom}>
-                                {data.data.creators[0].account} 
+                                {data.data.tokenID} 
                              </div>
                              </div>
                             {/* <div style={authorEarning}>Name: 

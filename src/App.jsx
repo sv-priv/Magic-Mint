@@ -278,6 +278,8 @@ function App(props) {
   const [route, setRoute] = useState();
   useEffect(() => {
     setRoute(window.location.pathname);
+
+    console.log("appcontract",writeContracts)
   }, [setRoute]);
 
 
