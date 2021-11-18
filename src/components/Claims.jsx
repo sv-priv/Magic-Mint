@@ -5,10 +5,10 @@ import SingleClaim from "./partials/singleClaim";
 export default function Claims (props){
 
     const [ userOwnedItems , setUserOwnedItems ] = useState();
-    const [ userClaimableItems , setUserClaimableItems ] = useState();
+    const [ userClaimableItems , setUserClaimableItems ] = useState([]);
 
     const  bodyStyle = {
-        minHeight: "700px"
+        minHeight: "600px"
     }
 
     const noClaimsAvailable = {
@@ -35,10 +35,12 @@ export default function Claims (props){
 
         const claimAddress = props.accountAddress;
         console.log(claimAddress)
+        setUserClaimableItems([])
 
         const allClaimableItemsByAddress = await fetch(`https://magic-mint-api.herokuapp.com/api/721/single_lazy_mint_controller/claimer?claimerAddress=${props.accountAddress}`);
 
         const allClaimableItemsJson =  await allClaimableItemsByAddress.json()
+
         setUserClaimableItems(allClaimableItemsJson)
 
         console.log("claims", allClaimableItemsJson)
@@ -96,7 +98,7 @@ export default function Claims (props){
     useEffect(() =>{
         claimsRow = []
         
-        if(userClaimableItems){
+        if(userClaimableItems.length){
             userClaimableItems.map((userClaimableItem, index) => {
                 claimsRow.push(
                     <div className="col-md-3 col-lg-3"> 
@@ -117,7 +119,7 @@ export default function Claims (props){
 
 
 
-    if(userClaimableItems){
+    if(userClaimableItems.length){
         userClaimableItems.map((userClaimableItem, index) => {
             claimsRow.push(
                 <div className="col-md-3 col-lg-3">
