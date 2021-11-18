@@ -349,7 +349,7 @@ export default function LazyMint(props) {
 
   // on first render/mount
   useEffect(()=>{
-    console.log("on first  render/ mount")
+      console.log("on first  render/ mount")
     console.log("napisani dog", props.writeContracts)
 
   },[])
