@@ -399,7 +399,7 @@ export default function LazyMint(props) {
           </div>
 
         
-            <input type="file" id="upload" 
+          <input type="file" id="upload" 
             onChange={ e => {
               e.preventDefault();
               const file = e.target.files[0]

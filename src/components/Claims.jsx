@@ -8,7 +8,7 @@ export default function Claims (props){
     const [ userClaimableItems , setUserClaimableItems ] = useState([]);
 
     const  bodyStyle = {
-        minHeight: "600px"
+        minHeight: "500px"
     }
 
     const noClaimsAvailable = {
