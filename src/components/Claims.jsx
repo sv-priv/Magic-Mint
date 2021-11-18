@@ -67,6 +67,8 @@ export default function Claims (props){
               ],
               claimTokenData.claimer
         );
+
+
         console.log(tx)
         
         let filtered = userClaimableItems.filter(function(userClaimableItem, index) {
@@ -97,9 +99,8 @@ export default function Claims (props){
         if(userClaimableItems){
             userClaimableItems.map((userClaimableItem, index) => {
                 claimsRow.push(
-                    <div className="col-md-3 col-lg-3">
-                        
-                    <SingleClaim index={index} data={userClaimableItem} handleClaim={handleClaim}/>
+                    <div className="col-md-3 col-lg-3"> 
+                        <SingleClaim index={index} data={userClaimableItem} handleClaim={handleClaim}/>
                     </div> 
                 )   
             })

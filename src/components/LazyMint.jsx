@@ -16,14 +16,13 @@ export default function LazyMint(props) {
 
   const writeContracts = props.writeContracts
 
-
   useEffect(() =>{
     console.log("dogovori",writeContracts)
 
   },[])
 
   const sdk = createRaribleSdk(props.provider, "mainnet", { fetchApi: fetch })
-
+  const [addressesRow, setAddresesRow] = useState([])
 
   const titleMint = {
       fontFamily: "Whyte-Inktrap",
@@ -85,6 +84,21 @@ export default function LazyMint(props) {
       padding: "10px",
       overflow: "hidden",
       cursor: "pointer"
+  }
+  const buttonAddAddress = {  
+    background: "white",
+    border: "none",
+    width: "35px",
+    height: "35px"
+  }
+
+  const addAnotherAddressDesc = {
+    marginLeft: "5%"
+  }
+  
+  const addAddressArea = {
+    float: "left",
+    marginLeft: "10%"
   }
 
   const nftDropareaDesc = {
@@ -224,8 +238,18 @@ export default function LazyMint(props) {
     height: "300px",
     margin: " 0 auto",
     background: "#F0F1F9",
-    borderRadius: "110px",
+    borderRadius: "70px",
     marginBottom: "34px"
+  }
+  const uploadedImage = {
+    width: "380px",
+    height: "240px",
+    borderRadius: "40px",
+    margin: " 0 auto",
+    marginBottom: "34px",
+    marginTop: "20px"
+
+
   }
 
   const label = {
@@ -273,6 +297,7 @@ export default function LazyMint(props) {
   const [singleErc721TokenId, setSingleErc721TokenId] = React.useState();
   const [singleSending721, setSingleSending721] = React.useState();
   const [singleClaimerAddress721, setSingleClaimerAddress721] = React.useState();
+  const [uploadedNFTImage, setUploadedNFTImage] = useState(false)
 
 
 
@@ -338,6 +363,11 @@ export default function LazyMint(props) {
 
   },[ formData])
 
+  useEffect(() =>{
+    console.log("red",addressesRow)
+    
+  },[])
+
   return (
     <div>
 
@@ -348,47 +378,43 @@ export default function LazyMint(props) {
       </div>
 
       <div style={nftDragDrop}>
-        <form>
-        <div style={nftDropareaDesc}>
-            Upload your NFT content image
-        </div>
 
-        <div style={allowedFormats}>
-            <span style={format}>
-                JPEG
-            </span>
-            <span style={format}>
-                PNG
-            </span>
-            <span style={format}>
-                GIF
-            </span>
-        </div>
+      {uploadedNFTImage
+        ? <img src={uploadedNFTImage} style={uploadedImage}></img>
+
+        : 
+        <form>
+          <div style={nftDropareaDesc}>
+              Upload your NFT content image
+          </div>
+
+          <div style={allowedFormats}>
+              <span style={format}>
+                  JPEG
+              </span>
+              <span style={format}>
+                  PNG
+              </span>
+              <span style={format}>
+                  GIF
+              </span>
+          </div>
 
         
-        <input type="file" id="upload" 
-        onChange={ e => {
-          e.preventDefault();
-          console.log(e.target.files[0])
-          const file = e.target.files[0]
-         setSingleErc721File(e.target.files[0])
-       }}
-        hidden/>
-        <label for="upload" style={chooseLabel}>Choose file</label>
-
-        {/* <Input
-          placeholder=""
-          type="file"
-          id="upload"
-          style={nftDroparea}
-           onChange={ e => {
-             e.preventDefault();
-            const file = e.target.files[0]
-            setSingleErc721File(e.target.files[0])
+            <input type="file" id="upload" 
+            onChange={ e => {
+              e.preventDefault();
+              const file = e.target.files[0]
+              var url = URL.createObjectURL(e.target.files[0])
+              setUploadedNFTImage(url)              
+              setSingleErc721File(e.target.files[0])
           }}
-        /> */}
+            hidden/>
+            <label for="upload" style={chooseLabel}>Choose file</label>
 
-        </form>
+          </form>
+      }
+
 
       </div>
 
@@ -409,7 +435,7 @@ export default function LazyMint(props) {
             setSingleErc721Description(e.target.value);
           }}
         />
-        <Input
+        {/* <Input
           value={singleErc721Royalties}
           placeholder="Royalties"
           type="text"
@@ -417,7 +443,7 @@ export default function LazyMint(props) {
           onChange={e => {
             setSingleErc721Royalties(e.target.value);
           }}
-        />
+        /> */}
         <div>Claimer:</div>
         <Input
           value={singleClaimerAddress721}
@@ -428,8 +454,36 @@ export default function LazyMint(props) {
             setSingleClaimerAddress721(e.target.value);
           }}
         />
+        <div>
+        <Button 
+          style={buttonAddAddress} 
+          onClick ={ () => {
+             addressesRow.push(
+              <div>
+                  <Input
+                    value={singleClaimerAddress721}
+                    placeholder="Enter an Ethereum address"
+                    type="text"
+                    style={nftName}
+                    onChange={e => {
+                      setSingleClaimerAddress721(e.target.value);
+                    }}
+                  />
+              </div>
+            )
+            setAddresesRow(addressesRow)
+            console.log(addressesRow)
+
+          }}>
+                  +
+        </Button>
+         <span style={addAnotherAddressDesc}>Enter another address:</span>
+         {addressesRow}
+
+        </div>
+        
       <br/>
-        <div>Choose Collection</div>
+        {/* <div>Choose Collection</div>
         <label>
           <Input
             value={singleErc721Collection}
@@ -440,7 +494,7 @@ export default function LazyMint(props) {
             }}
           />
         Rarible
-        </label>
+        </label> */}
 
 
           <br/>
@@ -452,12 +506,9 @@ export default function LazyMint(props) {
           type="primary"
           onClick={async () => {
 
-
             const r = await ipfs.add(singleErc721File)
-
             console.log("rrrrrr",r)
             setSingleErc721File(r.path)
-            
             console.log("image on ipfs ", singleErc721File)
 
              const formData = {
@@ -518,20 +569,14 @@ export default function LazyMint(props) {
             if(mintToDatabase && !singleSending721){
               alert("You created an nft")
               setSingleErc721File(null)
-              setSingleErc721Title(null);
-
+              setSingleErc721Title(null); 
               setSingleErc721Description(null);
               setSingleErc721Royalties(null);
               setSingleClaimerAddress721(null );
               setSingleErc721Collection(null);
-
-
               
             }
-
             const response  = await fetch(`https://ethereum-api-dev.rarible.org/v0.1/nft/items/${props.writeContracts.ERC721Rarible.address}:${newTokenId}/lazy`)
-
-            
             console.log("fetched data", response.json())
 
 

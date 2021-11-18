@@ -69,5 +69,6 @@ export async function putLazyMint(form) {
     },
     body: JSON.stringify(form),
   });
-  console.log(raribleMintResult.formData)
+  const ttr = await   raribleMintResult.json()
+  console.log("RARIBLE MINT RESULT", ttr)
 }
